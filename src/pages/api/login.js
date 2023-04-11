@@ -11,7 +11,7 @@ export default function handler(req, res) {
   const token=signToken('madhav')
  
   res.setHeader('Set-Cookie',serialize('token',token,{
-    httpOnly:true,
+    
     path:"/"
   }))
   

@@ -1,38 +1,33 @@
+import { useCheckToken } from "../../components/auth/AuthProvider"
 import axios from "axios"
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react"
 
 
 export default function Home() {
-  const [data,setdata]=useState()
- const login=async()=>{
-  const res=await fetch('/api/login',{
-    method:'POST'
-  }).then(()=>console.log('done'))
-}
- const user=async()=>{
-  const user =await axios.get('/api/user');
-  console.log(user)
-  setdata(user)
-  // const res=await fetch('/api/user',{
-  //   method:'GET'
-  // }).then((t)=>console.log('done user',))
-  // console.log(res.json())
-}
-const logout=async()=>{
-  const user =await axios.post('/api/logout');
-  console.log(user)
+  const [isLoggedIn,setLoggedIn]=useCheckToken();
+  const router=useRouter();
 
  
+const logout=async()=>{
+  const user =await axios.post('/api/logout');
+  user && setLoggedIn(false)
 }
 
  return (
 <div className=' bg-slate-900 h-screen flex flex-col justify-center p-10  '>
-<button onClick={login}  className="p-5 bg-white text-black ">Login to procced</button>
-<button onClick={user}  className="p-5 bg-white text-black mt-5">check user</button>
+
+
+<Link href='/login'>
+<button className="p-5 w-full bg-white text-black mt-10">Login page</button></Link>
+
+<button onClick={()=> console.log(isLoggedIn)}  className="p-5 bg-white text-black mt-5">check user</button>
 <button onClick={logout}  className="p-5 bg-white text-black mt-5">Logout</button>
-{data?.data.message==="invalid token" &&
-<div  className="text-white">you are not logged in</div>
-}
+<div className=" text-center p-5 bg-white text-black mt-5">
+<Link href='/dashboard'>
+<button className="w-full" >Dashboard</button></Link>
 </div>
-  )
+</div>
+ )
 }

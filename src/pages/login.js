@@ -1,20 +1,42 @@
-import React from 'react'
-import { useCheckToken } from "../../components/auth/AuthProvider"
-import Link from 'next/link';
+import React,{useState,useEffect}from 'react'
 import { useRouter } from 'next/router';
+import { useAuth } from "../../components/auth/AuthProvider"
+
 
 function login() {
-    const [isLoggedIn,setLoggedIn]=useCheckToken();
-const router=useRouter()
-    const loginSet=async()=>{
-        const res=await fetch('/api/login',{
-          method:'POST'
-        })
-       res &&( 
-        setLoggedIn(true),
-        router.push('/')
-        )
+    const { auth, initializing, getRedirect, clearRedirect, user, error } =
+    useAuth()
+  const [signInInProgress, setInProgress] = useState(false)
+
+  const router = useRouter()
+
+
+
+  useEffect(() => {
+    if (!initializing) {
+      if (user) {
+        const redirect = getRedirect()
+        console.log("redirect: ", redirect)
+        if (redirect !== null) {
+          router.push('/login') 
+          clearRedirect()
+        } else {
+          router.back()
+        }
       }
+    }
+  }, [router, getRedirect, clearRedirect, initializing, user])
+
+    const loginSet=async()=>{
+        try {
+            setInProgress(true)
+            await auth.signIn(2000)
+          } catch (error) {
+           console.log(error)
+          }
+        }
+      
+      
   return (
     <div className= "bg-slate-900 h-screen flex flex-col justify-center p-10">
         

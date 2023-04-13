@@ -4,10 +4,16 @@ import { CookiesProvider } from "react-cookie";
 export default function App({ Component, pageProps }) {
   return(
     <>
-  <CookiesProvider>  
-  <AuthProvider>
-     <Component {...pageProps}/>
-  </AuthProvider>
-  </CookiesProvider>
+
+<AuthProvider>
+        {Component.requireAuth ? (
+          <AuthGuard>
+            <Component {...pageProps} />
+          </AuthGuard>
+        ) : (
+          // public page
+          <Component {...pageProps} />
+        )}
+      </AuthProvider>
    </>)
 }

@@ -1,4 +1,4 @@
-import { useCheckToken } from "../../components/auth/AuthProvider"
+
 import axios from "axios"
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -6,7 +6,7 @@ import { useState } from "react"
 
 
 export default function Home() {
-  const [isLoggedIn,setLoggedIn]=useCheckToken();
+  
   const router=useRouter();
 
  

@@ -1,26 +1,61 @@
 import { getCookieParser } from "next/dist/server/api-utils";
 import React, { Children, useContext, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
+import { Auth,User } from "./auth";
 
-const CheckToken = React.createContext();
-const verifyToken = React.createContext();
 
-export const useCheckToken = () => {
-  return useContext(CheckToken)
-};
-export const useverifyToken = () => {
-  return useContext(verifyToken)
-};
+const auth = new Auth() 
+
+export const AuthContext = React.createContext();
+
+//const verifyToken = React.createContext();
+const key='signInKey'
+function setRedirect(redirect){
+  window.sessionStorage.setItem(key,redirect)
+}
+function getRedirect(){
+  window.sessionStorage.getItem(key)
+}
+function clearRedirect(redirect){
+  window.sessionStorage.removeItem(key)
+}
+
+
+export function useAuth() {
+  const auth = React.useContext(AuthContext)
+  return auth
+}
 
 
 const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setLoggedIn] = useState(false)
+  const [initialize,setInitializing] = useState(true)
+  const [user,setUser] = useState(User)
+useEffect(()=>{
+  auth.resolveUser(2000).onAuthStateChanged((User) => {
+    if (User) {
+      setUser(user)
+      
+    } else {
+      setUser(null)
+     
+    }
+    setInitializing(false)
+  })
+}, [])
 
+
+const value = {
+  auth: Auth,
+  user,
+  initialize,
+  setRedirect,
+  getRedirect,
+  clearRedirect,
+}
   return (
 
-    <CheckToken.Provider value={[isLoggedIn,setLoggedIn]} >
+    <AuthContext.Provider value={value} >
       {children}
-    </CheckToken.Provider>
+    </AuthContext.Provider>
 
   )
 }

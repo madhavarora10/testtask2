@@ -1,29 +1,30 @@
 
 import { useRouter } from "next/router"
-import { useEffect } from "react";
+import { Children, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { useAuth } from "./AuthProvider";
 
 export function AuthGuard({ children }) {
-  const {user}=useAuth();
+  console.log('children',children)
+  const {data}=useAuth();
   const router = useRouter();
-  console.log('user',user);
+  
 
   useEffect(() => {
-    
-    if (!user) {
+    console.log('user',data);  
+    if (!data) {
       router.push("/login")
       }else{
-       var token = user
+       var token = data
        var decoded = jwt_decode(token);
       }
     
-  }, [user])
+  }, [])
 
  
   
  
-  if (user) {
+  if (data) {
     return <>{children}</>
   }
 

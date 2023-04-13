@@ -1,6 +1,7 @@
 
 import React, { Children, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 const AuthContext=React.createContext()
 
 
@@ -27,17 +28,23 @@ const AuthProvider = ({ children }) => {
 //   getUser()
  
 // }, [user])
-
+const router=useRouter();
 
 const [data, setData] = useState(null);
 
 const fetchData = async () => {
   try {
     const response = await axios.get('/api/user');
+   
+  if(response){
     setData(response.data);
+    return
+  }
+  router.push('/login');
   } catch (error) {
     console.error('Error fetching data:', error);
   }
+
 };
 
 useEffect(() => {

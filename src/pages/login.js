@@ -5,8 +5,12 @@ import {useRouter } from 'next/router';
 
 function login() {
   const router=useRouter();
+
+
+
   const loginSet=async()=>{
     const user =await axios.post('/api/login');
+    // console.log('from loginpage',user)
     router.push('/')
    
   }

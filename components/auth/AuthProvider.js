@@ -1,55 +1,54 @@
-import { getCookieParser } from "next/dist/server/api-utils";
+
 import React, { Children, useContext, useEffect, useState } from "react";
-import { Auth,User } from "./auth";
-
-
-const auth = new Auth() 
-
-export const AuthContext = React.createContext();
-
-//const verifyToken = React.createContext();
-const key='signInKey'
-function setRedirect(redirect){
-  window.sessionStorage.setItem(key,redirect)
-}
-function getRedirect(){
-  window.sessionStorage.getItem(key)
-}
-function clearRedirect(redirect){
-  window.sessionStorage.removeItem(key)
-}
+import axios from "axios";
+const AuthContext=React.createContext()
 
 
 export function useAuth() {
-  const auth = React.useContext(AuthContext)
+  const auth = React.useContext(AuthContext);
+  console.log("from useAuth",auth);
   return auth
 }
 
 
 const AuthProvider = ({ children }) => {
   const [initialize,setInitializing] = useState(true)
-  const [user,setUser] = useState(User)
-useEffect(()=>{
-  auth.resolveUser(2000).onAuthStateChanged((User) => {
-    if (User) {
-      setUser(user)
-      
-    } else {
-      setUser(null)
-     
-    }
-    setInitializing(false)
-  })
-}, [])
+  const [user,setUser] = useState()
+// const getUser = useCallback(
+//   async()=>{
+//     console.log('called')
+//     const res =await axios.get('/api/user');
+//     setUser(res);
+    
+//   },[user]
+// );
 
+// useEffect(() => {
+//   getUser()
+ 
+// }, [user])
+
+
+const [data, setData] = useState(null);
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get('/api/user');
+    setData(response.data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+useEffect(() => {
+  fetchData();
+}, []); // Empty dependency array to run the effect only once
 
 const value = {
-  auth: Auth,
-  user,
+ 
+  data,
   initialize,
-  setRedirect,
-  getRedirect,
-  clearRedirect,
+ 
 }
   return (
 

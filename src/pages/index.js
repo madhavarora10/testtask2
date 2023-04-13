@@ -12,8 +12,13 @@ export default function Home() {
  
 const logout=async()=>{
   const user =await axios.post('/api/logout');
-  user && setLoggedIn(false)
+ 
 }
+const getUser=async()=>{
+  const user =await axios.get('/api/user');
+  console.log(user.data.jwt)
+}
+
 
  return (
 <div className=' bg-slate-900 h-screen flex flex-col justify-center p-10  '>
@@ -22,7 +27,7 @@ const logout=async()=>{
 <Link href='/login'>
 <button className="p-5 w-full bg-white text-black mt-10">Login page</button></Link>
 
-<button onClick={()=> console.log(isLoggedIn)}  className="p-5 bg-white text-black mt-5">check user</button>
+<button onClick={getUser}  className="p-5 bg-white text-black mt-5">check user</button>
 <button onClick={logout}  className="p-5 bg-white text-black mt-5">Logout</button>
 <div className=" text-center p-5 bg-white text-black mt-5">
 <Link href='/dashboard'>

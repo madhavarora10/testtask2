@@ -1,29 +1,29 @@
-import { useAuth } from "components/AuthProvider"
+
 import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { useEffect } from "react";
+import jwt_decode from "jwt-decode";
+import { useAuth } from "./AuthProvider";
 
 export function AuthGuard({ children }) {
-  const { user, initializing, setRedirect } = useAuth()
-  const router = useRouter()
+  const {user}=useAuth();
+  const router = useRouter();
+  console.log('user',user);
 
   useEffect(() => {
-    if (!initializing) {
     
-      if (!user) {
-       
-        setRedirect(router.route)
-        router.push("/login")
+    if (!user) {
+      router.push("/login")
+      }else{
+       var token = user
+       var decoded = jwt_decode(token);
       }
-    }
-  }, [initializing, router, user, setRedirect])
+    
+  }, [user])
 
  
-  if (initializing) {
-    return <h1>Application Loading</h1>
-  }
-
+  
  
-  if (!initializing && user) {
+  if (user) {
     return <>{children}</>
   }
 
